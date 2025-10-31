@@ -17,4 +17,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "DynamicImageSDK"
-include(":dynamic-image-sdk")
+include(":app", ":dynamic-image-sdk")

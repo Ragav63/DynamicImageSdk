@@ -52,7 +52,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "com.ragav63"
             artifactId = "dynamic-image-sdk"
-            version = "1.0.2"
+            version = project.version.toString()
 
             // ✅ Use official release component
             afterEvaluate {

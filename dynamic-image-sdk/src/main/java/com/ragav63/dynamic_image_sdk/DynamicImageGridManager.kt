@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.GridLayout
@@ -31,7 +32,7 @@ class DynamicImageGridView @JvmOverloads constructor(
     /**
      * Public method to set the image list and rebuild the layout.
      */
-    fun setImages(imageUrls: List<String>) {
+    fun setImages(imageUrls: List<Any>) {
         removeAllViews()
 
         val totalImages = imageUrls.size
@@ -120,11 +121,16 @@ class DynamicImageGridView @JvmOverloads constructor(
                 else -> params = LayoutParams()
             }
 
-            if (index == 4 && totalImages > 5) {
-                addView(createOverlayImage(url, totalImages, backgroundRes), params)
+            val view = if (index == 4 && totalImages > 5) {
+                createOverlayImage(url, totalImages, backgroundRes)
             } else {
-                addView(createRegularImage(url, backgroundRes, params))
+                createRegularImage(url, backgroundRes, params)
             }
+            view.setOnClickListener {
+                onImageClickListener?.onImageClick(index, url, imageUrls)
+            }
+            addView(view, params)
+
         }
     }
 
@@ -139,7 +145,7 @@ class DynamicImageGridView @JvmOverloads constructor(
         }
     }
 
-    private fun createRegularImage(url: String, backgroundResId: Int?, params: LayoutParams): ImageView {
+    private fun createRegularImage(url: Any, backgroundResId: Int?, params: LayoutParams): ImageView {
         return ImageView(context).apply {
             layoutParams = params
             scaleType = ImageView.ScaleType.CENTER_CROP
@@ -152,7 +158,7 @@ class DynamicImageGridView @JvmOverloads constructor(
         }
     }
 
-    private fun createOverlayImage(url: String, totalImages: Int, backgroundResId: Int?): FrameLayout {
+    private fun createOverlayImage(url: Any, totalImages: Int, backgroundResId: Int?): FrameLayout {
         val frame = FrameLayout(context).apply {
             layoutParams = FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT,
@@ -199,4 +205,14 @@ class DynamicImageGridView @JvmOverloads constructor(
         frame.addView(text)
         return frame
     }
+
+    private var onImageClickListener: OnImageClickListener? = null
+    fun setOnImageClickListener(listener: OnImageClickListener) {
+        this.onImageClickListener = listener
+    }
+
+}
+
+interface OnImageClickListener {
+    fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>)
 }

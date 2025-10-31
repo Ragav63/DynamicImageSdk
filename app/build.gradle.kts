@@ -5,9 +5,8 @@ plugins {
 
 android {
     namespace = "com.ragav63.dynamicimage"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
+
 
     defaultConfig {
         applicationId = "com.ragav63.dynamicimage"
@@ -46,4 +45,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(project(":dynamic-image-sdk"))
+
 }
