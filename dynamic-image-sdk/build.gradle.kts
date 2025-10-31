@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("maven-publish")
-    id("kotlin-kapt")
 }
 
 android {
@@ -44,7 +43,6 @@ dependencies {
 
     // ✅ Glide dependency
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    kapt("com.github.bumptech.glide:compiler:4.16.0")
 }
 
 publishing {
@@ -52,7 +50,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "com.ragav63"
             artifactId = "dynamic-image-sdk"
-            version = "1.0.5"
+            version = "1.0.7"
 
             // ✅ Use official release component
             afterEvaluate {
@@ -65,7 +63,12 @@ publishing {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME")
-
+            credentials {
+                username = project.findProperty("gpr.user") as String?
+                    ?: System.getenv("USERNAME_GITHUB")
+                password = project.findProperty("gpr.key") as String?
+                    ?: System.getenv("TOKEN_GITHUB")
+            }
         }
     }
 }
