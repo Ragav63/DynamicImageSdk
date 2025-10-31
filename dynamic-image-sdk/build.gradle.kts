@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     id("maven-publish")
+    id("kotlin-kapt")
 }
 
 android {
@@ -43,6 +44,7 @@ dependencies {
 
     // ✅ Glide dependency
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 }
 
 publishing {
@@ -50,7 +52,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "com.ragav63"
             artifactId = "dynamic-image-sdk"
-            version = "1.0.0"
+            version = "1.0.2"
 
             // ✅ Use official release component
             afterEvaluate {
