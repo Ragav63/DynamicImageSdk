@@ -40,88 +40,156 @@ dependencies {
 ```
 
 # Usage 🚀
-## Basic Image Loading
+## XML Layout
+Add DynamicImageGridView to your layout:
+
+xml
 ```
+<com.ragav63.dynamic_image_sdk.DynamicImageGridView
+    android:id="@+id/gridImages"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
+```
+
+## Basic Implementation
 kotlin
-import com.ragav.dynamicimagesdk.DynamicImageSdk
+```
+val gridImage = findViewById<DynamicImageGridView>(R.id.gridImages)
 
-// Load image from URL
-DynamicImageSdk.load(imageView, "https://example.com/image.jpg")
+// Set images from drawable resources
+gridImage.setImages(listOf(
+    R.drawable.image1,
+    R.drawable.image2,
+    R.drawable.image3,
+    R.drawable.image4,
+    R.drawable.image5,
+    R.drawable.image6
+))
 
-// Load with placeholder
-DynamicImageSdk.load(
-    imageView = imageView,
-    url = "https://example.com/image.jpg",
-    placeholder = R.drawable.placeholder
-)
-
-// Load with error image
-DynamicImageSdk.load(
-    imageView = imageView,
-    url = "https://example.com/image.jpg",
-    placeholder = R.drawable.placeholder,
-    errorImage = R.drawable.error_image
-)
+// Set click listener
+gridImage.setOnImageClickListener(object : OnImageClickListener {
+    override fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>) {
+        Log.d("ImageClick", "Clicked index=$index, url=$imageUrl, total=${allImages.size}")
+        // Handle image click - open full screen, show details, etc.
+    }
+})
 ```
 
-## Advanced Configuration
-
-```
+## Loading from URLs
 kotlin
-DynamicImageSdk.load(
-    imageView = imageView,
-    url = "https://example.com/image.jpg",
-    placeholder = R.drawable.placeholder,
-    errorImage = R.drawable.error_image,
-    applyCircleCrop = true,  // Apply circle transformation
-    applyGrayScale = false   // Apply grayscale filter
+```
+val imageUrls = listOf(
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg",
+    "https://example.com/image3.jpg",
+    "https://example.com/image4.jpg",
+    "https://example.com/image5.jpg",
+    "https://example.com/image6.jpg"
 )
+
+gridImage.setImages(imageUrls)
 ```
 
-## From Resources
-```
+## Mixed Sources
 kotlin
-DynamicImageSdk.load(
-    imageView = imageView,
-    resourceId = R.drawable.local_image
+```
+val mixedImages = listOf(
+    "https://example.com/remote1.jpg",  // URL
+    R.drawable.local_image,             // Drawable resource
+    "https://example.com/remote2.jpg",  // URL
+    R.drawable.another_local            // Drawable resource
 )
 
-From Assets
+gridImage.setImages(mixedImages)
+```
+
+# Layout Patterns 🔄
+The SDK automatically handles different layouts:
+
+1 Image: Full width single column
+
+2 Images: Equal two-column layout
+
+3 Images: Equal three-column layout
+
+4 Images: 2x2 grid layout
+
+5+ Images: Special 2-3 grid with overlay for extra images
+
+# API Reference 📚
+## DynamicImageGridView Methods
+Method	Description
+setImages(imageUrls: List<Any>)	Set images to display (URLs, resource IDs, or mixed)
+setOnImageClickListener(listener: OnImageClickListener)	Set click listener for images
+OnImageClickListener Interface
 kotlin
-DynamicImageSdk.load(
-    imageView = imageView,
-    assetPath = "images/asset_image.png"
-)
 ```
+interface OnImageClickListener {
+    fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>)
+}
+```
+# Parameters:
 
-# Configuration ⚙️
-Initialize (Optional)
-The SDK auto-initializes, but you can customize the configuration:
-```
+index: Position of clicked image (0-based)
+
+imageUrl: The image source (URL, resource ID, etc.)
+
+allImages: Complete list of all images passed to the grid
+
+# Advanced Usage 🛠️
+## Handling Clicks
 kotlin
-// Custom initialization (if needed)
-DynamicImageSdk.initialize(
-    cacheSize = 50 * 1024 * 1024, // 50MB cache
-    timeout = 30 // 30 seconds timeout
-)
+```
+gridImage.setOnImageClickListener(object : OnImageClickListener {
+    override fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>) {
+        when (imageUrl) {
+            is String -> {
+                // Handle URL image
+                openFullScreenImage(imageUrl, allImages)
+            }
+            is Int -> {
+                // Handle resource ID
+                openFullScreenResource(imageUrl, allImages)
+            }
+        }
+    }
+    
+    private fun openFullScreenImage(url: String, allImages: List<Any>) {
+        // Implement full screen viewer
+    }
+    
+    private fun openFullScreenResource(resId: Int, allImages: List<Any>) {
+        // Implement full screen viewer for resources
+    }
+})
+```
+## Programmatic Creation
+
+kotlin
+```
+val gridView = DynamicImageGridView(context).apply {
+    layoutParams = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+    )
+    setImages(yourImageList)
+    setOnImageClickListener(yourClickListener)
+}
+
+// Add to your layout
+parentLayout.addView(gridView)
 ```
 
-# Available Parameters
-Parameter	Type	Description	Default
-url	String	Image URL to load	-
-resourceId	Int	Android resource ID	-
-assetPath	String	Path to asset image	-
-placeholder	Int	Placeholder drawable resource	null
-errorImage	Int	Error drawable resource	null
-applyCircleCrop	Boolean	Apply circle crop transformation	false
-applyGrayScale	Boolean	Apply grayscale filter	false
-ProGuard/R8 🔒
+# ProGuard/R8 🔒
 If you're using ProGuard, add these rules to your proguard-rules.pro:
-```
+
 proguard
--keep class com.ragav.dynamicimagesdk.** { *; }
--dontwarn com.ragav.dynamicimagesdk.**
-Requirements 📋
+```
+-keep class com.ragav63.dynamic_image_sdk.** { *; }
+-dontwarn com.ragav63.dynamic_image_sdk.**
+```
+
+# Requirements 📋
 Min SDK: 21 (Android 5.0)
 
 Compile SDK: 34
@@ -129,14 +197,24 @@ Compile SDK: 34
 Kotlin: 1.9+
 
 Java: 17
-```
 
 # Dependencies 📚
 This SDK uses:
 
 Glide: For image loading and caching
 
-Kotlin Coroutines: For asynchronous operations
+AndroidX: For compatibility and modern Android features
+
+# Version History 📖
+✅ Working Versions:
+
+v1.0.8 - Latest stable version (Recommended)
+
+v1.0.2 - Stable release
+
+v1.0.0 - Initial release
+
+❌ Other versions may not work properly. Please use only the versions listed above.
 
 # License 📄
 text
@@ -159,15 +237,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 # Reporting Issues 🐛
 If you find any issues, please report them on the GitHub Issues page.
 
-# Version History 📖
-✅ Working Versions:
-
-v1.0.8 - Latest stable version (Recommended)
-
-v1.0.2 - Stable release
-
-v1.0.0 - Initial release
-
-❌ Other versions may not work properly. Please use only the versions listed above.
-
-Made with ❤️ by Ragav
+# Made with ❤️ by Ragav
