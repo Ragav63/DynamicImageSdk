@@ -1,4 +1,9 @@
 jdk:
   - openjdk17
-install:
-  - ./gradlew :dynamic-image-sdk:assembleRelease
+
+before_install:
+  - chmod +x gradlew
+
+build:
+  commands:
+    - ./gradlew clean :dynamic-image-sdk:assembleRelease :dynamic-image-sdk:publishToMavenLocal
