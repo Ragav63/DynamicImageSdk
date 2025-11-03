@@ -32,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         ))
 
         gridImage.setOnImageClickListener(object : OnImageClickListener {
-            override fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>) {
-                Log.d("Click", "Clicked index=$index, url=$imageUrl, total=${allImages.size}")
+            override fun onImageClick(index: Int, imageUrl: Any?, allImages: List<Any>?) {
+                Log.d("Click", "Clicked index=$index, url=$imageUrl, total=${allImages?.size}")
             }
         })
 

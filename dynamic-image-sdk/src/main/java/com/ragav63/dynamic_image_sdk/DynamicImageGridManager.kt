@@ -16,8 +16,11 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 
 /**
- * A fully custom GridLayout-based view that displays a dynamic hotel image grid.
- * Handles 1–5 image layouts with adaptive curved corners, and shows +X overlay for extra images.
+ * SDK version of your dynamic image grid.
+ * Matches the layout behavior of the inline "binding.gridHotelImages" version:
+ * - Always uses R.drawable.curve_trs as background.
+ * - Handles 1–5 images with +X overlay for extra.
+ * - Applies consistent 3dp margin.
  */
 class DynamicImageGridView @JvmOverloads constructor(
     context: Context,
@@ -28,19 +31,40 @@ class DynamicImageGridView @JvmOverloads constructor(
     private val density = context.resources.displayMetrics.density
     private val normalHeight = (220 * density).toInt()
     private val baseHeight = (130 * density).toInt()
+    private val marginPx = (3 * density).toInt() // same margin logic as original
 
-    /**
-     * Public method to set the image list and rebuild the layout.
-     */
-    fun setImages(imageUrls: List<Any>) {
+    private var onImageClickListener: OnImageClickListener? = null
+
+    fun setImages(imageUrls: List<Any>?) {
         removeAllViews()
+        val totalImages = imageUrls?.size ?: 0
 
-        val totalImages = imageUrls.size
-        if (totalImages == 0) return
+        if (totalImages == 0) {
+            val params = LayoutParams().apply {
+                width = 0
+                height = normalHeight
+                columnSpec = spec(0, 1, 1f)
+                setMargins(marginPx, marginPx, marginPx, marginPx)
+            }
+
+            val imageView = ImageView(context).apply {
+                layoutParams = params
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                clipToOutline = true
+                background = ContextCompat.getDrawable(context, R.drawable.curve_trs)
+                outlineProvider = ViewOutlineProvider.BACKGROUND
+            }
+
+            Glide.with(context)
+                .load(R.drawable.hoteldetailplaceholder)
+                .into(imageView)
+
+            addView(imageView)
+            return
+        }
 
         val displayImages = minOf(5, totalImages)
 
-        // Set column count based on display count
         columnCount = when (displayImages) {
             1 -> 1
             2 -> 2
@@ -50,169 +74,108 @@ class DynamicImageGridView @JvmOverloads constructor(
             else -> 6
         }
 
-        repeat(displayImages) { index ->
-            val url = imageUrls[index]
-            val params: LayoutParams
-            var backgroundRes: Int? = null
-
-            when (displayImages) {
-                1 -> {
-                    params = baseParams(normalHeight, index, 1f)
-                    backgroundRes = R.drawable.curve_trs
-                }
-                2 -> {
-                    params = baseParams(normalHeight, index, 1f)
-                    backgroundRes = if (index == 0)
-                        R.drawable.top_left_btm_left_curve_trs
-                    else
-                        R.drawable.top_right_btm_right_curve_trs
-                }
-                3 -> {
-                    params = baseParams(normalHeight, index, 1f)
-                    backgroundRes = when (index) {
-                        0 -> R.drawable.top_left_btm_left_curve_trs
-                        2 -> R.drawable.top_right_btm_right_curve_trs
-                        else -> null
-                    }
-                }
-                4 -> {
-                    params = LayoutParams().apply {
-                        width = 0
-                        height = baseHeight
+        for (index in 0 until displayImages) {
+            val url = imageUrls?.get(index)
+            val params = LayoutParams().apply {
+                width = 0
+                height = if (displayImages <= 3) normalHeight else baseHeight
+                when (displayImages) {
+                    4 -> {
                         rowSpec = spec(index / 2, 1)
                         columnSpec = spec(index % 2, 1, 1f)
-                        setMargins(4, 4, 4, 4)
                     }
-                    backgroundRes = when (index) {
-                        0 -> R.drawable.top_left_curve_trs
-                        1 -> R.drawable.top_right_curve_trs
-                        2 -> R.drawable.bottom_left_curve_trs
-                        else -> R.drawable.bottom_right_curve_trs
-                    }
-                }
-                5 -> {
-                    if (index < 2) {
-                        params = LayoutParams().apply {
-                            width = 0
-                            height = baseHeight
+                    5 -> {
+                        if (index < 2) {
                             rowSpec = spec(0, 1)
                             columnSpec = spec(index * 3, 3, 1f)
-                            setMargins(4, 4, 4, 4)
-                        }
-                        backgroundRes = if (index == 0)
-                            R.drawable.top_left_curve_trs
-                        else
-                            R.drawable.top_right_curve_trs
-                    } else {
-                        params = LayoutParams().apply {
-                            width = 0
-                            height = baseHeight
+                        } else {
                             rowSpec = spec(1, 1)
                             columnSpec = spec((index - 2) * 2, 2, 1f)
-                            setMargins(4, 4, 4, 4)
-                        }
-                        backgroundRes = when (index) {
-                            4 -> R.drawable.bottom_right_curve_trs
-                            2 -> R.drawable.bottom_left_curve_trs
-                            else -> null
                         }
                     }
+                    else -> {
+                        columnSpec = spec(index, 1, 1f)
+                    }
                 }
-                else -> params = LayoutParams()
+                setMargins(marginPx, marginPx, marginPx, marginPx)
             }
 
-            val view = if (index == 4 && totalImages > 5) {
-                createOverlayImage(url, totalImages, backgroundRes)
+            if (index == 4 && totalImages > 5) {
+                val overlayLayout = FrameLayout(context).apply {
+                    layoutParams = FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    background = ContextCompat.getDrawable(context, R.drawable.curve_trs)
+                    outlineProvider = ViewOutlineProvider.BACKGROUND
+                    clipToOutline = true
+                    isClickable = true
+                    isFocusable = true
+                    setOnClickListener { onImageClickListener?.onImageClick(index, url, imageUrls) }
+                }
+
+                val overlayImage = ImageView(context).apply {
+                    layoutParams = FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    clipToOutline = true
+                }
+
+                Glide.with(context)
+                    .load(url)
+                    .placeholder(R.drawable.hoteldetailplaceholder)
+                    .into(overlayImage)
+
+                val overlay = View(context).apply {
+                    layoutParams = FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                    setBackgroundColor(Color.parseColor("#88000000"))
+                }
+
+                val countText = TextView(context).apply {
+                    layoutParams = FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    ).apply { gravity = Gravity.CENTER }
+                    text = "+${totalImages - 5}"
+                    setTextColor(Color.WHITE)
+                    textSize = 20f
+                    setTypeface(null, Typeface.BOLD)
+                }
+
+                overlayLayout.addView(overlayImage)
+                overlayLayout.addView(overlay)
+                overlayLayout.addView(countText)
+                addView(overlayLayout, params)
             } else {
-                createRegularImage(url, backgroundRes, params)
-            }
-            view.setOnClickListener {
-                onImageClickListener?.onImageClick(index, url, imageUrls)
-            }
-            addView(view, params)
+                val imageView = ImageView(context).apply {
+                    layoutParams = params
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    clipToOutline = true
+                    background = ContextCompat.getDrawable(context, R.drawable.curve_trs)
+                    outlineProvider = ViewOutlineProvider.BACKGROUND
+                    setOnClickListener { onImageClickListener?.onImageClick(index, url, imageUrls) }
+                }
 
+                Glide.with(context)
+                    .load(url)
+                    .placeholder(R.drawable.hoteldetailplaceholder)
+                    .into(imageView)
+
+                addView(imageView)
+            }
         }
     }
 
-    // -- internal helpers --
-
-    private fun baseParams(height: Int, index: Int, weight: Float): LayoutParams {
-        return LayoutParams().apply {
-            width = 0
-            this.height = height
-            columnSpec = spec(index, 1, weight)
-            setMargins(4, 4, 4, 4)
-        }
-    }
-
-    private fun createRegularImage(url: Any, backgroundResId: Int?, params: LayoutParams): ImageView {
-        return ImageView(context).apply {
-            layoutParams = params
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            clipToOutline = true
-            backgroundResId?.let {
-                background = ContextCompat.getDrawable(context, it)
-                outlineProvider = ViewOutlineProvider.BACKGROUND
-            }
-            Glide.with(context).load(url).into(this)
-        }
-    }
-
-    private fun createOverlayImage(url: Any, totalImages: Int, backgroundResId: Int?): FrameLayout {
-        val frame = FrameLayout(context).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT
-            )
-            backgroundResId?.let {
-                background = ContextCompat.getDrawable(context, it)
-                outlineProvider = ViewOutlineProvider.BACKGROUND
-                clipToOutline = true
-            }
-        }
-
-        val image = ImageView(context).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT
-            )
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            clipToOutline = true
-        }
-        Glide.with(context).load(url).into(image)
-
-        val overlay = View(context).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT
-            )
-            setBackgroundColor(Color.parseColor("#88000000"))
-        }
-
-        val text = TextView(context).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT
-            ).apply { gravity = Gravity.CENTER }
-            text = "+${totalImages - 5}"
-            setTextColor(Color.WHITE)
-            textSize = 20f
-            setTypeface(null, Typeface.BOLD)
-        }
-
-        frame.addView(image)
-        frame.addView(overlay)
-        frame.addView(text)
-        return frame
-    }
-
-    private var onImageClickListener: OnImageClickListener? = null
     fun setOnImageClickListener(listener: OnImageClickListener) {
-        this.onImageClickListener = listener
+        onImageClickListener = listener
     }
-
 }
 
 interface OnImageClickListener {
-    fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>)
+    fun onImageClick(index: Int, imageUrl: Any?, allImages: List<Any>?)
 }
