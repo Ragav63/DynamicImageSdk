@@ -35,9 +35,24 @@ Add the dependency to your module's build.gradle:
 ```
 gradle
 dependencies {
-    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.8'
+    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.9'
 }
 ```
+💡 Note: v1.0.9 is the latest release with improved grid rendering and optimized image loading logic.
+
+# Screenshots 📸
+## 🧩 Version v1.0.8
+
+Visual layout from version v1.0.8 (stable) — initial grid design and image layout.
+
+<img src="https://github.com/user-attachments/assets/5191e737-2f15-4fd9-a64a-f2b0d042791e" alt="v1.0.8 Screenshot" height="300" width="200"/>
+
+## ⚙️ Version v1.0.9
+
+Enhanced visuals in v1.0.9 — improved alignment, better aspect ratio handling, and smoother transitions.
+
+<img src="https://github.com/user-attachments/assets/35329285-669e-4ea0-ac57-979ea5142d76" alt="v1.0.8 Screenshot" height="300" width="200"/>
+
 
 # Usage 🚀
 ## XML Layout
@@ -207,6 +222,8 @@ AndroidX: For compatibility and modern Android features
 
 # Version History 📖
 ✅ Working Versions:
+
+v1.0.9 - Latest Enhanced grid alignment, smoother animations, improved caching
 
 v1.0.8 - Latest stable version (Recommended)
 
