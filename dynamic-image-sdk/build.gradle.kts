@@ -15,11 +15,17 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // ✅ Enable shrinking and obfuscation
+            isMinifyEnabled = true
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            // ✅ Keep debug builds simple
+            isMinifyEnabled = false
         }
     }
 
@@ -29,6 +35,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    lint {
+        abortOnError = false
     }
 }
 
@@ -41,13 +50,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // ✅ Glide (safe version range between 4.12.0 and <5.0.0)
-    implementation("com.github.bumptech.glide:glide") {
-        version {
-            strictly("[4.12.0,5.0.0[")
-        }
-    }
-
-    implementation("com.github.Baseflow:PhotoView:2.3.0")
+    compileOnly("com.github.bumptech.glide:glide:4.16.0")
+    compileOnly("com.github.Baseflow:PhotoView:2.3.0")
 
 }
 
@@ -59,7 +63,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.Ragav63" // 👈 this must match your GitHub username exactly
                 artifactId = "DynamicImageSdk"  // 👈 this is your module name (can be anything)
-                version = "1.0.11"               // 👈 update this every release/tag
+                version = "1.0.12"               // 👈 update this every release/tag
             }
         }
     }

@@ -35,11 +35,18 @@ class DynamicImageGridView @JvmOverloads constructor(
 
     private var onImageClickListener: OnImageClickListener? = null
     private var showDefaultDialog = false
+    private var dialogTitle : String? = null
 
-    fun setImages(imageUrls: List<Any>?, showDefaultDialog: Boolean = false, scaleTypeValue: ImageView.ScaleType? = null) {
+    fun setImages(
+        imageUrls: List<Any>?,
+        showDefaultDialog: Boolean = false,
+        scaleTypeValue: ImageView.ScaleType? = null,
+        dialogTitle: String? = null
+    ) {
         removeAllViews()
         val totalImages = imageUrls?.size ?: 0
         this.showDefaultDialog = showDefaultDialog
+        this.dialogTitle = dialogTitle
 
         if (totalImages == 0) {
             val params = LayoutParams().apply {
@@ -198,6 +205,7 @@ class DynamicImageGridView @JvmOverloads constructor(
     ) {
         val dialog = ImageOverviewDialog(
             context = context,
+            dialogTitle = dialogTitle,
             allImages = allImages,
             scaleType = scaleType
         )

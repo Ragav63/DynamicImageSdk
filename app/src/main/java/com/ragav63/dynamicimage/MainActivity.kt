@@ -30,8 +30,9 @@ class MainActivity : AppCompatActivity() {
             R.drawable.gots01e04,
             R.drawable.gots01e05,
             R.drawable.theboys,
-        ),false,
-            ImageView.ScaleType.FIT_XY
+        ),true,
+            ImageView.ScaleType.FIT_XY,
+            "Dialog Images"
         )
 
         gridImage.setOnImageClickListener(object : OnImageClickListener {

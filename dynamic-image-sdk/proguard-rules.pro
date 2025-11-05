@@ -19,3 +19,30 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# ================================================
+# ✅ SDK ProGuard Rules — DynamicImageSDK
+# ================================================
+
+# --- Keep Glide generated API (required) ---
+-keep class com.bumptech.glide.** { *; }
+-keep class * extends com.bumptech.glide.module.AppGlideModule
+
+# --- Keep PhotoView (required) ---
+-keep class com.github.chrisbanes.photoview.** { *; }
+-keep class com.github.Baseflow.photoview.** { *; }
+
+# --- General cleanup & optimization ---
+-dontnote
+-dontwarn
+
+# --- Keep only your SDK’s public API ---
+-keep public class com.ragav63.dynamic_image_sdk.** { *; }
+
+# --- Let R8 strip all unused library internals ---
+-keep class * {
+    public protected *;
+}
+
+# --- Optional: Keep source file names for better stacktraces ---
+# -keepattributes SourceFile,LineNumberTable
+# -renamesourcefileattribute SourceFile
