@@ -59,7 +59,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.Ragav63" // 👈 this must match your GitHub username exactly
                 artifactId = "DynamicImageSdk"  // 👈 this is your module name (can be anything)
-                version = "1.0.9"               // 👈 update this every release/tag
+                version = "1.0.10"               // 👈 update this every release/tag
             }
         }
     }
