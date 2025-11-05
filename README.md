@@ -1,16 +1,24 @@
 # Dynamic Image SDK 🖼️
 
-A powerful Android SDK for dynamic image loading, transformation, and caching with support for placeholders, error handling, and custom transformations.
+A lightweight, powerful Android SDK for dynamic image loading, grid layouts, and dialog-based previews — all with smart caching, placeholders, and flexible scaling.
+
+# 🚀 What’s New in v1.0.11
+
+Added showDefaultDialog flag – optionally open a built-in full-screen image preview on click
+
+Added scaleType parameter – control image scaling directly (e.g., FIT_XY, CENTER_CROP, etc.)
+
+Improved layout performance – optimized grid rendering and smoother scaling behavior
 
 ## Features ✨
 
-- **Dynamic Image Loading**: Load images from various sources (URL, resources, assets)
-- **Smart Caching**: Memory and disk caching for optimal performance
-- **Transformations**: Apply various image transformations on-the-fly
-- **Placeholder Support**: Custom placeholders while loading
-- **Error Handling**: Custom error images for failed loads
-- **Kotlin First**: Written in Kotlin with coroutines support
-- **Lightweight**: Minimal footprint with no unnecessary dependencies
+- **🚀 Dynamic Image Loading**: Load images from various sources (URL, resources, assets)
+- **⚡ Smart Caching**: Uses Glide for efficient memory and disk caching
+- **🎨 Flexible Scaling**: Supports all ImageView.ScaleType options
+- **🧩 Built-in Dialog Viewer**: Instantly preview images in an interactive dialog
+- **🛡️ Error & Placeholder Handling**: Custom images for both
+- **🧠 Kotlin-First**: Clean Kotlin implementation, easy Java interoperability
+- **🧱 Lightweight** – Minimal dependencies, zero ViewBinding required
 
 ## Installation 📦
 
@@ -35,10 +43,11 @@ Add the dependency to your module's build.gradle:
 ```
 gradle
 dependencies {
-    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.9'
+    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.11'
 }
 ```
-💡 Note: v1.0.9 is the latest release with improved grid rendering and optimized image loading logic.
+💡 Note :v1.0.11 is the latest version featuring a new dialog-based image viewer and improved grid handling.
+
 
 # Screenshots 📸
 ## 🧩 Version v1.0.8
@@ -131,6 +140,87 @@ The SDK automatically handles different layouts:
 
 5+ Images: Special 2-3 grid with overlay for extra images
 
+# 🧠 Built-in Dialog Viewer (v1.0.11)
+
+Version v1.0.11 introduces an elegant, dialog-based image preview viewer that replaces the need for a fullscreen activity.
+
+## ⚙️ Version v1.0.11
+Enhanced visuals in v1.0.11 — introduces an elegant, dialog-based image preview viewer that replaces the need for a fullscreen activity.
+If the second parameter (showDefaultDialog) is set to true, the SDK automatically opens its built-in image viewer dialog when an image is clicked.
+If you set it to false or omit the third parameter (scaleType), the dialog will not appear — allowing you to handle clicks manually.
+
+# Screenshots 📸
+<img src="https://github.com/user-attachments/assets/c464986e-0f80-477c-9f43-d0afa15ab269" alt="v1.0.8 Screenshot" height="300" width="200"/>
+
+Example
+```
+gridImage.setImages(
+    listOf(
+        R.drawable.tvshows,
+        R.drawable.gots01e01,
+        R.drawable.gots01e03,
+        R.drawable.gots01e04,
+        R.drawable.gots01e05,
+        R.drawable.theboys
+    ),
+    true, // enable built-in dialog
+    ImageView.ScaleType.FIT_XY // optional scale type
+)
+```
+
+Example (Custom Click Handling)
+```
+gridImage.setImages(
+    listOf(
+        R.drawable.image1,
+        R.drawable.image2,
+        R.drawable.image3
+    ),
+    false // disable default dialog
+)
+
+// Set click listener
+gridImage.setOnImageClickListener(object : OnImageClickListener {
+    override fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>) {
+        Log.d("ImageClick", "Clicked index=$index, url=$imageUrl, total=${allImages.size}")
+        // Handle image click manually - open full screen, show details, etc.
+    }
+})
+```
+
+## 🪟 Dialog Preview Features
+
+Displays in a centered dialog (80% width × 50% height)
+
+Horizontal scrollable list with zoomable PhotoView images
+
+Thumbnails for quick navigation
+
+Previous/Next buttons for control
+
+Optional title via dialogTitle
+
+Custom scale type for each image (e.g., FIT_CENTER, CENTER_CROP, FIT_XY)
+
+## ⚙️ Parameters Summary
+Parameter	Type	Default	Description
+imageUrls	List<Any>	Required	List of image sources (URLs, Drawables, etc.)
+showDefaultDialog	Boolean	false	Whether to open the SDK’s built-in dialog viewer
+scaleTypeValue	ImageView.ScaleType?	CENTER_CROP	Defines image scaling inside both grid and dialog
+
+## 🧩 Custom Dialog Usage
+```
+val dialog = ImageOverviewDialog(
+    context = context,
+    allImages = imageList,
+    dialogTitle = "Season Gallery",
+    scaleType = ImageView.ScaleType.FIT_CENTER
+)
+dialog.showDialog()
+```
+
+The dialog includes synchronized preview and thumbnail lists, powered by RecyclerView and Glide.
+
 # API Reference 📚
 ## DynamicImageGridView Methods
 Method	Description
@@ -151,33 +241,6 @@ imageUrl: The image source (URL, resource ID, etc.)
 
 allImages: Complete list of all images passed to the grid
 
-# Advanced Usage 🛠️
-## Handling Clicks
-kotlin
-```
-gridImage.setOnImageClickListener(object : OnImageClickListener {
-    override fun onImageClick(index: Int, imageUrl: Any, allImages: List<Any>) {
-        when (imageUrl) {
-            is String -> {
-                // Handle URL image
-                openFullScreenImage(imageUrl, allImages)
-            }
-            is Int -> {
-                // Handle resource ID
-                openFullScreenResource(imageUrl, allImages)
-            }
-        }
-    }
-    
-    private fun openFullScreenImage(url: String, allImages: List<Any>) {
-        // Implement full screen viewer
-    }
-    
-    private fun openFullScreenResource(resId: Int, allImages: List<Any>) {
-        // Implement full screen viewer for resources
-    }
-})
-```
 ## Programmatic Creation
 
 kotlin
@@ -222,14 +285,15 @@ AndroidX: For compatibility and modern Android features
 
 # Version History 📖
 ✅ Working Versions:
+v1.0.11 - ✅ Latest Added dialog-based image viewer, scaleType support, removed ViewBinding
 
-v1.0.9 - Latest Enhanced grid alignment, smoother animations, improved caching
+v1.0.9 - ✅ Latest Enhanced grid alignment, smoother animations, improved caching
 
-v1.0.8 - Latest stable version (Recommended)
+v1.0.8 - ✅ Latest stable version (Recommended)
 
-v1.0.2 - Stable release
+v1.0.2 - 🟡 Stable release
 
-v1.0.0 - Initial release
+v1.0.0 - 🔰 Initial release
 
 ❌ Other versions may not work properly. Please use only the versions listed above.
 
