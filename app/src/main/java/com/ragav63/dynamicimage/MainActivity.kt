@@ -2,6 +2,7 @@ package com.ragav63.dynamicimage
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,11 +30,13 @@ class MainActivity : AppCompatActivity() {
             R.drawable.gots01e04,
             R.drawable.gots01e05,
             R.drawable.theboys,
-        ))
+        ),false,
+            ImageView.ScaleType.FIT_XY
+        )
 
         gridImage.setOnImageClickListener(object : OnImageClickListener {
             override fun onImageClick(index: Int, imageUrl: Any?, allImages: List<Any>?) {
-                Log.d("Click", "Clicked index=$index, url=$imageUrl, total=${allImages?.size}")
+                Log.d("DynamicImageGridView", "Clicked custom index=$index, url=$imageUrl, total=${allImages?.size}")
             }
         })
 

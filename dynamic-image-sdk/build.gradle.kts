@@ -40,8 +40,15 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Glide dependency
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    // ✅ Glide (safe version range between 4.12.0 and <5.0.0)
+    implementation("com.github.bumptech.glide:glide") {
+        version {
+            strictly("[4.12.0,5.0.0[")
+        }
+    }
+
+    implementation("com.github.Baseflow:PhotoView:2.3.0")
+
 }
 
 // ✅ JitPack-compatible Maven Publish setup

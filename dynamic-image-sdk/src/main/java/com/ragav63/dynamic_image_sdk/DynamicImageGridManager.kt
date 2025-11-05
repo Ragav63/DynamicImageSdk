@@ -34,10 +34,12 @@ class DynamicImageGridView @JvmOverloads constructor(
     private val marginPx = (3 * density).toInt() // same margin logic as original
 
     private var onImageClickListener: OnImageClickListener? = null
+    private var showDefaultDialog = false
 
-    fun setImages(imageUrls: List<Any>?) {
+    fun setImages(imageUrls: List<Any>?, showDefaultDialog: Boolean = false, scaleTypeValue: ImageView.ScaleType? = null) {
         removeAllViews()
         val totalImages = imageUrls?.size ?: 0
+        this.showDefaultDialog = showDefaultDialog
 
         if (totalImages == 0) {
             val params = LayoutParams().apply {
@@ -111,7 +113,9 @@ class DynamicImageGridView @JvmOverloads constructor(
                     clipToOutline = true
                     isClickable = true
                     isFocusable = true
-                    setOnClickListener { onImageClickListener?.onImageClick(index, url, imageUrls) }
+                    setOnClickListener {
+                        handleImageClick(index, url, imageUrls, scaleTypeValue)
+                    }
                 }
 
                 val overlayImage = ImageView(context).apply {
@@ -158,7 +162,9 @@ class DynamicImageGridView @JvmOverloads constructor(
                     clipToOutline = true
                     background = ContextCompat.getDrawable(context, R.drawable.curve_trs)
                     outlineProvider = ViewOutlineProvider.BACKGROUND
-                    setOnClickListener { onImageClickListener?.onImageClick(index, url, imageUrls) }
+                    setOnClickListener {
+                        handleImageClick(index, url, imageUrls, scaleTypeValue)
+                    }
                 }
 
                 Glide.with(context)
@@ -169,6 +175,34 @@ class DynamicImageGridView @JvmOverloads constructor(
                 addView(imageView)
             }
         }
+    }
+
+    private fun handleImageClick(
+        index: Int,
+        imageUrl: Any?,
+        allImages: List<Any>?,
+        scaleType: ImageView.ScaleType?
+    ) {
+        if (showDefaultDialog) {
+            showDefaultImageDialog(index, imageUrl, allImages, scaleType)
+        } else {
+            onImageClickListener?.onImageClick(index, imageUrl, allImages)
+        }
+    }
+
+    private fun showDefaultImageDialog(
+        index: Int,
+        imageUrl: Any?,
+        allImages: List<Any>?,
+        scaleType: ImageView.ScaleType?
+    ) {
+        val dialog = ImageOverviewDialog(
+            context = context,
+            allImages = allImages,
+            scaleType = scaleType
+        )
+        dialog.showDialog()
+
     }
 
     fun setOnImageClickListener(listener: OnImageClickListener) {
