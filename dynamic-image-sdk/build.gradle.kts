@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,7 +64,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.Ragav63" // 👈 this must match your GitHub username exactly
                 artifactId = "DynamicImageSdk"  // 👈 this is your module name (can be anything)
-                version = "1.0.12"               // 👈 update this every release/tag
+                version = "1.0.13"               // 👈 update this every release/tag
             }
         }
     }
