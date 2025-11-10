@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.ragav63.dynamic_image_sdk"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
