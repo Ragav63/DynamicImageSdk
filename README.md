@@ -1,6 +1,14 @@
 # Dynamic Image SDK 🖼️
 
-A lightweight, powerful Android SDK for dynamic image loading, grid layouts, and dialog-based previews — all with smart caching, placeholders, and flexible scaling.
+A lightweight, flexible Android SDK for dynamic image grids, interactive dialogs, and custom click handling — built with Glide and PhotoView.
+
+# 🚀 What’s New in v1.0.12
+
+Added showDefaultDialog flag – optionally open a built-in full-screen image preview on click
+
+Added scaleType parameter – control image scaling directly (e.g., FIT_XY, CENTER_CROP, etc.)
+
+Improved layout performance – optimized grid rendering and smoother scaling behavior
 
 # 🚀 What’s New in v1.0.11
 
@@ -18,7 +26,7 @@ Improved layout performance – optimized grid rendering and smoother scaling be
 - **🧩 Built-in Dialog Viewer**: Instantly preview images in an interactive dialog
 - **🛡️ Error & Placeholder Handling**: Custom images for both
 - **🧠 Kotlin-First**: Clean Kotlin implementation, easy Java interoperability
-- **🧱 Lightweight** – Minimal dependencies, zero ViewBinding required
+- **🧱 Lightweight** – Ultra-lightweight — just 96 KB (v1.0.12)
 
 ## Installation 📦
 
@@ -36,7 +44,7 @@ dependencyResolutionManagement {
 }
 ```
 
-# Add Dependency
+# Add Dependency - v1.0.11
 
 Add the dependency to your module's build.gradle:
 
@@ -47,6 +55,14 @@ dependencies {
 }
 ```
 💡 Note :v1.0.11 is the latest version featuring a new dialog-based image viewer and improved grid handling.
+
+# Add Dependency -v1.0.12
+```
+dependencies {
+    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.12'
+}
+```
+✅ v1.0.12 — latest version (optimized AAR size ≈ 96 KB, same features as v1.0.11).
 
 
 # Screenshots 📸
@@ -139,6 +155,29 @@ The SDK automatically handles different layouts:
 4 Images: 2x2 grid layout
 
 5+ Images: Special 2-3 grid with overlay for extra images
+
+## ⚙️ Version v1.0.12
+Enhanced visuals in v1.0.12 — Optimized AAR (removed unused deps), same features as v1.0.11 and also given dialog title.
+
+# Screenshots 📸
+<img src="https://github.com/user-attachments/assets/c464986e-0f80-477c-9f43-d0afa15ab269" alt="v1.0.8 Screenshot" height="300" width="200"/>
+
+Example
+```
+gridImage.setImages(
+    listOf(
+        R.drawable.tvshows,
+        R.drawable.gots01e01,
+        R.drawable.gots01e03,
+        R.drawable.gots01e04,
+        R.drawable.gots01e05,
+        R.drawable.theboys
+    ),
+    true, // enable built-in dialog
+    ImageView.ScaleType.FIT_XY // optional scale type,
+    "Dialog"
+)
+```
 
 # 🧠 Built-in Dialog Viewer (v1.0.11)
 
@@ -278,6 +317,7 @@ Java: 17
 
 # Dependencies 📚
 This SDK uses:
+PhotoView : zoom support
 
 Glide: For image loading and caching
 
@@ -285,6 +325,8 @@ AndroidX: For compatibility and modern Android features
 
 # Version History 📖
 ✅ Working Versions:
+v1.0.12 - 🟢 96 KB Optimized AAR (removed unused deps), same features as v1.0.11
+
 v1.0.11 - ✅ Latest Added dialog-based image viewer, scaleType support, removed ViewBinding
 
 v1.0.9 - ✅ Latest Enhanced grid alignment, smoother animations, improved caching
