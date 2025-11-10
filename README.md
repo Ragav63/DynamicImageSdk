@@ -1,6 +1,10 @@
 # Dynamic Image SDK 🖼️
 
-A lightweight, flexible Android SDK for dynamic image grids, interactive dialogs, and custom click handling — built with Glide and PhotoView.
+Easily display dynamic image grids with optional full-screen dialogs and Jetpack Compose support.
+Flexible for any Android project — handles URLs, resource IDs, and file paths seamlessly.
+
+# 🚀 What’s New in v1.0.14
+Jetpack Compose support
 
 # 🚀 What’s New in v1.0.12
 
@@ -26,6 +30,7 @@ Improved layout performance – optimized grid rendering and smoother scaling be
 - **🧩 Built-in Dialog Viewer**: Instantly preview images in an interactive dialog
 - **🛡️ Error & Placeholder Handling**: Custom images for both
 - **🧠 Kotlin-First**: Clean Kotlin implementation, easy Java interoperability
+- **🧱 Jetpack Compose**: support (from v1.0.14)
 - **🧱 Lightweight** – Ultra-lightweight — just 96 KB (v1.0.12)
 
 ## Installation 📦
@@ -44,6 +49,36 @@ dependencyResolutionManagement {
 }
 ```
 
+# Add Dependency -v1.0.14
+## 🎨 Jetpack Compose Support (since v1.0.14)
+
+Now you can use the SDK directly in Compose!
+```
+DynamicImageGridCompose(
+    imageList = listOf(
+        R.drawable.tvshows,
+        R.drawable.gots01e01,
+        R.drawable.gots01e03
+    ),
+    showDialog = true,
+    dialogTitle = "Dialog Images"
+)
+```
+
+```
+dependencies {
+    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.14'
+}
+```
+
+# Add Dependency -v1.0.12
+```
+dependencies {
+    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.12'
+}
+```
+✅ v1.0.12 — latest version (optimized AAR size ≈ 96 KB, same features as v1.0.11).
+
 # Add Dependency - v1.0.11
 
 Add the dependency to your module's build.gradle:
@@ -55,14 +90,6 @@ dependencies {
 }
 ```
 💡 Note :v1.0.11 is the latest version featuring a new dialog-based image viewer and improved grid handling.
-
-# Add Dependency -v1.0.12
-```
-dependencies {
-    implementation 'com.github.Ragav63:DynamicImageSdk:v1.0.12'
-}
-```
-✅ v1.0.12 — latest version (optimized AAR size ≈ 96 KB, same features as v1.0.11).
 
 
 # Screenshots 📸
@@ -325,6 +352,8 @@ AndroidX: For compatibility and modern Android features
 
 # Version History 📖
 ✅ Working Versions:
+v1.0.14 - ✅ Jetpack Compose support (DynamicImageGridCompose)
+
 v1.0.12 - 🟢 96 KB Optimized AAR (removed unused deps), same features as v1.0.11
 
 v1.0.11 - ✅ Latest Added dialog-based image viewer, scaleType support, removed ViewBinding
